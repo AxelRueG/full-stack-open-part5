@@ -47,7 +47,7 @@ const App = () => {
 			{!user ? (
 				<LoginForm handleUser={handleUser} />
 			) : (
-				<>
+				<div>
 					<p>{user.username}</p>
 					<Togglable ref={togglableRef} buttonLabel="add new blog">
 						<NewBlogForm setBlogs={addBlog} token={user.token} />
@@ -56,7 +56,7 @@ const App = () => {
 						<Blog key={blog.id} blog={blog} />
 					))}
 					<button onClick={handleLogout}>logout</button>
-				</>
+				</div>
 			)}
 		</div>
 	);
