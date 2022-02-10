@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import blogsServices from '../services/blogs';
+import propTypes from 'prop-types';
+
 
 const blogStyle = {
 	border: '1px solid black',
@@ -56,5 +58,12 @@ const Blog = ({username, blog, updateBlog, deleteBlog}) => {
 		</div>
 	);
 };
+
+Blog.propTypes = {
+	username: propTypes.string.isRequired,
+	blog: propTypes.object.isRequired,
+	updateBlog: propTypes.func.isRequired,
+	deleteBlog: propTypes.func.isRequired
+}
 
 export default Blog;
