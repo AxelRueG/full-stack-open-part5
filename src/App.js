@@ -11,7 +11,9 @@ const App = () => {
 	const togglableRef = useRef();
 
 	useEffect(() => {
-		blogService.getAll().then((blogs) => setBlogs(blogs));
+		blogService
+			.getAll()
+			.then((Blogs) => setBlogs(Blogs.sort((a, b) => b.likes - a.likes)));
 	}, []);
 
 	useEffect(() => {
@@ -37,9 +39,23 @@ const App = () => {
 	};
 
 	const addBlog = (blog) => {
-		setBlogs([...blogs, blog])
-		togglableRef.current.toggleVisibility()
-	}
+		setBlogs([...blogs, blog]);
+		togglableRef.current.toggleVisibility();
+	};
+
+	const updateBlog = (blog) => {
+		const b = blogs.filter((elem) => elem.id !== blog.id);
+		const bs = [...b, blog].sort((a, b) => b.likes - a.likes);
+		console.log(bs);
+		setBlogs(bs);
+	};
+
+	const deleteBlog = (blog) => {
+		blogService
+			.deleteBlog(blog, user.token)
+			.then(() => setBlogs(blogs.filter((elem) => elem.id !== blog.id)))
+			.catch((e) => console.log(e));
+	};
 
 	return (
 		<div>
@@ -53,7 +69,13 @@ const App = () => {
 						<NewBlogForm setBlogs={addBlog} token={user.token} />
 					</Togglable>
 					{blogs.map((blog) => (
-						<Blog key={blog.id} blog={blog} />
+						<Blog
+							key={blog.id}
+							username={user.username}
+							blog={blog}
+							updateBlog={updateBlog}
+							deleteBlog={deleteBlog}
+						/>
 					))}
 					<button onClick={handleLogout}>logout</button>
 				</div>

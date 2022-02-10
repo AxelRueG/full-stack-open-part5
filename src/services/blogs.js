@@ -20,8 +20,19 @@ const config = (token) => {
 }
 
 const addNewBlog = async (blog, token) => {
-  const request = await axios.post('/api/blogs', blog, config(token))
+  const request = await axios.post(baseUrl, blog, config(token))
   return request.data
 }
 
-export default { getAll, login, addNewBlog };
+const addLike = async (blog) => {
+  const {id, likes} = blog
+  const request = await axios.put(`${baseUrl}/${id}`, {...blog, likes: likes+1})
+  return request.data
+}
+
+const deleteBlog = async (blog, token) => {
+  const {id} = blog
+  await axios.delete(`${baseUrl}/${id}`, config(token))
+}
+
+export default { getAll, login, addNewBlog, addLike, deleteBlog };
