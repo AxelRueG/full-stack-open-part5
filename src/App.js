@@ -4,10 +4,14 @@ import blogService from './services/blogs'
 import LoginForm from './components/LoginForm'
 import NewBlogForm from './components/NewBlogForm'
 import Togglable from './components/Togglable'
+import Message from './components/Message'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [status, setStatus] = useState(true)
+
   const togglableRef = useRef()
 
   useEffect(() => {
@@ -39,15 +43,36 @@ const App = () => {
   }
 
   const addBlog = (blog) => {
-    setBlogs([...blogs, blog])
-    togglableRef.current.toggleVisibility()
+    blogService
+      .addNewBlog(blog, user.token)
+      .then((response) => {
+        setBlogs([...blogs, response])
+        togglableRef.current.toggleVisibility()
+        setMessage(`a new blog ${response.title} by ${response.author} added`)
+        setStatus(true)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      })
+      .catch(() => {
+        setMessage(`the blog ${blog.title} by ${blog.author} can't be added`)
+        setStatus(false)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      })
   }
 
   const updateBlog = (blog) => {
-    const b = blogs.filter((elem) => elem.id !== blog.id)
-    const bs = [...b, blog].sort((a, b) => b.likes - a.likes)
-    console.log(bs)
-    setBlogs(bs)
+    blogService
+      .addLike(blog)
+      .then((response) => {
+        const b = blogs.filter((elem) => elem.id !== response.id)
+        const bs = [...b, response].sort((a, b) => b.likes - a.likes)
+        console.log(bs)
+        setBlogs(bs)
+      })
+      .catch((e) => console.log(e))
   }
 
   const deleteBlog = (blog) => {
@@ -65,6 +90,7 @@ const App = () => {
       ) : (
         <div>
           <p>{user.username}</p>
+          {message && <Message message={message} status={status} />}
           <Togglable ref={togglableRef} buttonLabel="add new blog">
             <NewBlogForm setBlogs={addBlog} token={user.token} />
           </Togglable>

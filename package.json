@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.25.0",
     "prop-types": "^15.8.1",
@@ -18,7 +16,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "runtest": "CI=true npm test"
   },
   "eslintConfig": {
     "extends": [
@@ -40,6 +39,9 @@
   },
   "proxy": "http://localhost:3003",
   "devDependencies": {
-    "eslint-plugin-jest": "^26.1.0"
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.2",
+    "eslint-plugin-jest": "^26.1.0",
+    "jest-watch-typeahead": "^0.6.5"
   }
 }
