@@ -33,11 +33,11 @@ const LoginForm = ({ handleUser }) => {
         {messageError && <Message message={messageError} />}
         <div>
 					username:
-          <input type="text" value={username} onChange={handleUsername} />
+          <input id='u_username' type="text" value={username} onChange={handleUsername} />
         </div>
         <div>
 					password:
-          <input type="password" value={password} onChange={handlePassword} />
+          <input id='u_password' type="password" value={password} onChange={handlePassword} />
         </div>
         <button onClick={handleSubmit}>login</button>
       </form>

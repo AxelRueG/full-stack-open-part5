@@ -21,20 +21,18 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const token = window.localStorage.getItem('token')
-    const username = window.localStorage.getItem('username')
-    const password = window.localStorage.getItem('password')
-    if (token) {
-      const User = { token, username, password }
+    const userData = window.localStorage.getItem('userData')
+    if (userData) {
+      const User = JSON.parse(userData)
       setUser(User)
+      blogService.setToken(User.token)
     }
   }, [])
 
   const handleUser = (User) => {
     setUser(User)
-    window.localStorage.setItem('token', User.token)
-    window.localStorage.setItem('username', User.username)
-    window.localStorage.setItem('password', User.password)
+    window.localStorage.setItem('userData', JSON.stringify(User))
+    blogService.setToken(User.token)
   }
 
   const handleLogout = () => {
@@ -44,7 +42,7 @@ const App = () => {
 
   const addBlog = (blog) => {
     blogService
-      .addNewBlog(blog, user.token)
+      .addNewBlog(blog)
       .then((response) => {
         setBlogs([...blogs, response])
         togglableRef.current.toggleVisibility()
@@ -67,17 +65,18 @@ const App = () => {
     blogService
       .addLike(blog)
       .then((response) => {
-        const b = blogs.filter((elem) => elem.id !== response.id)
-        const bs = [...b, response].sort((a, b) => b.likes - a.likes)
-        console.log(bs)
-        setBlogs(bs)
+        let b = blogs.filter((elem) => elem.id === response.id)[0]
+        b = { ...b, likes: response.likes }
+        const B = blogs.filter((elem) => elem.id !== response.id)
+        const Bs = [...B, b].sort((a, b) => b.likes - a.likes)
+        setBlogs(Bs)
       })
       .catch((e) => console.log(e))
   }
 
   const deleteBlog = (blog) => {
     blogService
-      .deleteBlog(blog, user.token)
+      .deleteBlog(blog)
       .then(() => setBlogs(blogs.filter((elem) => elem.id !== blog.id)))
       .catch((e) => console.log(e))
   }
@@ -92,12 +91,12 @@ const App = () => {
           <p>{user.username}</p>
           {message && <Message message={message} status={status} />}
           <Togglable ref={togglableRef} buttonLabel="add new blog">
-            <NewBlogForm setBlogs={addBlog} token={user.token} />
+            <NewBlogForm setBlogs={addBlog}/>
           </Togglable>
           {blogs.map((blog) => (
             <Blog
               key={blog.id}
-              username={user.username}
+              userId={user.id}
               blog={blog}
               updateBlog={updateBlog}
               deleteBlog={deleteBlog}

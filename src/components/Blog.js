@@ -6,14 +6,15 @@ const blogStyle = {
   border: '1px solid black',
   borderRadius: '10px',
   margin: '5px',
-  padding: '10px',
+  paddingLeft: '10px',
+  paddingBottom: '10px'
 }
 
 const buttonStyle = {
   backgroundColor: '#4d4dff',
 }
 
-const Blog = ({ username, blog, updateBlog, deleteBlog }) => {
+const Blog = ({ userId, blog, updateBlog, deleteBlog }) => {
   const [showMore, setShowMore] = useState(false)
 
   const handleShow = () => setShowMore(!showMore)
@@ -27,25 +28,20 @@ const Blog = ({ username, blog, updateBlog, deleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      {blog.title} - {blog.author}
-      <br />
+    <div style={blogStyle} className="Blog">
+      <p>{blog.title} - {blog.author}</p>
       <button onClick={handleShow}> {showMore ? 'hide' : 'view'} </button>
-      <br />
       {showMore && (
         <>
-          {blog.url}
+          <p>{blog.url}</p>
           <div>
-            {blog.likes}
+            likes: <span className='likesNum'>{blog.likes}</span>
             <button onClick={handleLike}>like</button>
           </div>
-          {blog.user.name}
-          <br/>
-          { username === blog.user.username && <>
+          <p>{blog.user.name}</p>
+          { userId === blog.user.id &&
             <button style={buttonStyle} onClick={handleDelete}>delete</button>
-            <br />
-          </>}
-
+          }
         </>
       )}
     </div>
@@ -53,7 +49,7 @@ const Blog = ({ username, blog, updateBlog, deleteBlog }) => {
 }
 
 Blog.propTypes = {
-  username: propTypes.string.isRequired,
+  userId: propTypes.string.isRequired,
   blog: propTypes.object.isRequired,
   updateBlog: propTypes.func.isRequired,
   deleteBlog: propTypes.func.isRequired
